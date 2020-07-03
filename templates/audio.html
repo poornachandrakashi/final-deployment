@@ -16,7 +16,7 @@
             border: 3px solid green;
             padding: 10px;
         }
-
+        
         #box1,
         #box2,
         #box3 {
@@ -24,31 +24,31 @@
             margin: 5px;
             padding: 10px;
         }
-
+        
         #box1 {
             width: 50px;
             height: 50px;
             background-color: #F5B5C5;
         }
-
+        
         #box2 {
             width: 100px;
             height: 100px;
             background-color: #B5D5F5;
         }
-
+        
         #box3 {
             width: 150px;
             height: 150px;
             background-color: #BEA7CC;
         }
-
+        
         p {
             font-size: 20px;
             font-weight: bold;
             text-align: center;
         }
-
+        
         .gfg {
             font-size: 40px;
             color: white;
@@ -65,21 +65,21 @@
 
             // Allowing file type
             var allowedExtensions =
-                    /(\.wav)$/i;
+                /(\.wav)$/i;
 
             if (!allowedExtensions.exec(filePath)) {
                 alert('Only wav files allowed');
                 fileInput.value = '';
                 return false;
             }
-                }
+        }
     </script>
 
 </head>
 
 <body class="is-preload">
     <header id="header">
-        <a  class="title">Aakraman 2.0 Audio classification</a>
+        <a class="title">Aakraman 2.0 Audio classification</a>
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
@@ -88,88 +88,58 @@
             </ul>
         </nav>
     </header>
-    <!---
-    <section>
-        <h2>Form</h2>
-        <form method="post" action="#">
-            <div class="row gtr-uniform">
-                <div class="col-6 col-12-xsmall">
-                    <input type="text" name="name" id="demo-name" value="" placeholder="Name" />
-                </div>
-                <div class="col-6 col-12-xsmall">
-                    <input type="email" name="email" id="demo-email" value="" placeholder="Email" />
-                </div>
-                <div class="col-12">
-                    <select name="age" id="age">
-                        <option value="">- Age Category -</option>
-                        <option value="1">1-18</option>
-                        <option value="1">19-60</option>
-                        <option value="1">61-80</option>
-                        <option value="1">81-100</option>
-                    </select>
-                </div>
-                <div class="col-6 col-12-xsmall">
-                    <input type="tel" name="phone" id="phno" value="" placeholder="Phone number" />
-                </div>
-                <div class="col-6 col-12-xsmall">
-                    <input type="text" name="address" id="address" value="" placeholder="Complete address" />
-                </div>
-
-              <div class="col-4 col-12-small">
-                    <input type="radio" id="demo-priority-low" name="demo-priority" checked>
-                    <label for="demo-priority-low">Low</label>
-                </div>
-                <div class="col-4 col-12-small">
-                    <input type="radio" id="demo-priority-normal" name="demo-priority">
-                    <label for="demo-priority-normal">Normal</label>
-                </div>
-                <div class="col-4 col-12-small">
-                    <input type="radio" id="demo-priority-high" name="demo-priority">
-                    <label for="demo-priority-high">High</label>
-                </div> -->
-                <!-- <div class="col-6 col-12-small">
-                    <input type="checkbox" id="demo-copy" name="demo-copy">
-                    <label for="demo-copy">Email me a copy</label>
-                </div>
-                <div class="col-6 col-12-small">
-                    <input type="checkbox" id="demo-human" name="demo-human" checked>
-                    <label for="demo-human">Not a robot</label>
-                </div> -->
-                <!-- <div class="col-12">
-                    <textarea name="demo-message" id="demo-message" placeholder="Enter your message" rows="6"></textarea>
-                </div>
-                <div class="col-12">
-                    <ul class="actions">
-                        <li><input type="submit" value="Submit" class="primary" /></li>
-                        <li><input type="reset" value="Reset" /></li>
-                    </ul>
-                </div>
-            </div>
-        </form>
-    </section>
-  -->
-
     <div id="wrapper">
         <section id="main" class="wrapper">
-          <form method="post" action = "/audiosubmit">
-            <div class="inner">
-                <h1 class="major">Covid 19 Cough analysis</h1>
-            </div>
-            <div class="gfg">Upload your cough audio file</div>
-            <br>
-            <div style="text-align: center;">
-                <input type="file" accept="audio/*" capture id="recorder" onchange="PreviewAudio()"/>
-                <!-- <audio id="player" controls></audio> -->
-            </div>
-            <br>
-            <br>
-            <div style="text-align: center;">
-                <button type="submit" class="btn btn-light">Submit</button>
-            </div>
-          </form>
-    </section>
+            <form method="post" action="/audiosubmit">
+                <div class="inner">
+                    <h1 class="major">Covid 19 Cough analysis</h1>
+                </div>
+                <div class="gfg">Upload your cough audio file</div>
+                <br>
+                <div style="text-align: center;">
+                    <input type="file" accept="audio/*" capture id="recorder" onchange="PreviewAudio()" />
+                    <!-- <audio id="player" controls></audio> -->
+                </div>
+                <h4 style="text-align: center;">OR</h4>
+                <br>
+                <div style="text-align: center;">
+                    <button type="button" id="recordButton">Record/Stop</button>
+                    <!-- <audio id="player" controls></audio> -->
+                </div>
+                <br>
+                <div style="text-align: center;">
+                    <input type="submit" class="btn btn-light" value="submit" />
+                </div>
+            </form>
+        </section>
     </div>
+    <script>
+        var recorder, gumStream;
+        var recordButton = document.getElementById("recordButton");
+        recordButton.addEventListener("click", toggleRecording);
 
+        function toggleRecording() {
+            if (recorder && recorder.state == "recording") {
+                recorder.stop();
+                gumStream.getAudioTracks()[0].stop();
+            } else {
+                navigator.mediaDevices.getUserMedia({
+                    audio: true
+                }).then(function(stream) {
+                    gumStream = stream;
+                    recorder = new MediaRecorder(stream);
+                    recorder.ondataavailable = function(e) {
+                        var url = URL.createObjectURL(e.data);
+                        var preview = document.createElement('audio');
+                        preview.controls = true;
+                        preview.src = url;
+                        document.body.appendChild(preview);
+                    };
+                    recorder.start();
+                });
+            }
+        }
+    </script>
 </body>
 
 </html>

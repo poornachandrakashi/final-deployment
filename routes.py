@@ -1,12 +1,14 @@
-from flask import render_template,request
+from flask import render_template,request,Flask
 import os
 import time
 
-from aakraman_api.packages.test import test 
-from aakraman_api.packages.data import get_df
+# from aakraman_api.packages.test import test 
+# from aakraman_api.packages.data import get_df
 
-from aakraman_api import app
-from aakraman_api.model import User 
+# from aakraman_api import app
+# from aakraman_api.model import User 
+
+app=Flask(__name__)
 
 #maybe make it into blueprint later
 
@@ -53,3 +55,6 @@ def check():
 def covid():
 	df = get_df()
 	return render_template('covid.html', table = df.to_html(index = False, justify = 'center', classes = ['set-center','table', 'table-striped', 'table-borderless']))
+
+if __name__=="__main__":
+    app.run(debug=True)
